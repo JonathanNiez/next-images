@@ -1,69 +1,117 @@
 import { useState } from "react";
+import Link from "next/link";
+import { register} from "./api/api";
 
 export default function Register() {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const [isPassMatch, setIsPassMatch] = useState(false);
+
   const [inputs, setInputs] = useState({
+    email: "",
     username: "",
     password: "",
     confirmPassword: "",
   });
 
-  function conPassMatch() {
-    if (inputs.password !== inputs.confirmPassword) {
-      return <div>Confirm Password not Match</div>;
-    } else {
+  function togglePassword() {
+    setShowPassword(!showPassword);
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+
+    try {
+      const response = await register(formData);
+      console.log(response); // Handle success, e.g., show a success message or redirect the user
+    } catch (error) {
+      console.error(error); // Handle error, e.g., show an error message
     }
   }
 
-  function handleSubmit(e) {
-    e.preventDefault();
-  }
-
   return (
-    <div className="h-screen">
-      <header className="bg-gray-200 p-3">
-        <h1 className="text-4xl text-center">Next Movies</h1>
+    <div className="h-screen bg-gray-700">
+      <header className="bg-gray-600 rounded-md  shadow-md p-3">
+        <h1 className="text-3xl text-white  text-center">Register</h1>
       </header>
-
-      <div className="h-screen">
-        <h1>Login</h1>
+      <div className="h-auto flex items-center justify-center">
         <form
-          className="p-3 border-lg flex m-5 justify-center place-items-center bg-blue-300 rounded-md shadow-md"
+          method="post"
+          className="p-3 w-96 border-lg grid m-5 justify-center place-items-center bg-gray-500 rounded-md shadow-md"
           onSubmit={handleSubmit}
         >
           <input
             value={inputs.username}
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Username"
+            className="rounded-md shadow-md m-1 p-2 w-64"
+            onChange={(e) => setInputs({ ...inputs, username: e.target.value })}
+          />
+
+          <input
+            value={inputs.email}
             type="email"
+            id="email"
+            name="email"
             placeholder="Email"
-            className="rounded-md m-1 flex"
-            onChange={() => setInputs({ ...inputs.username })}
-          ></input>
+            className="rounded-md shadow-md m-1 p-2 w-64"
+            onChange={(e) => setInputs({ ...inputs, email: e.target.value })}
+          />
           <input
             value={inputs.password}
-            type="password"
+            type={showPassword ? "text" : "password"}
             placeholder="Password"
-            className="rounded-md m-1 flex"
-            onChange={() => setInputs({ ...inputs.password })}
-          ></input>
+            id="password"
+            name="password"
+            className="rounded-md shadow-md m-1 p-2 w-64 flex"
+            onChange={(e) => setInputs({ ...inputs, password: e.target.value })}
+          />
+          {isPassMatch ? (
+            <p>Match</p>
+          ) : (
+            <p className="text-red-400">Confirm Password not Match</p>
+          )}
+          <div className="flex">
+            <input
+              value={inputs.confirmPassword}
+              type={showPassword ? "text" : "password"}
+              placeholder="Confirm Password"
+              id="confirmPassword"
+              className="rounded-md shadow-md flex m-1 p-2 w-64 align-items-center"
+              onChange={(e) =>
+                setInputs({ ...inputs, confirmPassword: e.target.value })
+              }
+            />
+          </div>
+
           <button
             type="submit"
-            onClick={conPassMatch}
-            className="flex bg-gray-300 shadow-md hover:shadow-lg hover:bg-gray-500 hover:text-white p-2 rounded-lg"
+            className=" bg-gray-300 w-40 shadow-md m-2 hover:shadow-lg hover:bg-gray-500 hover:text-white p-2 rounded-lg"
           >
-            Login
+            Register
           </button>
+
+          <div className="flex">
+            <p className="text-white mr-2">Already have an Account? </p>
+            <Link
+              href="/login"
+              className="text-white hover:shadow-gray-400 hover:text-gray-400"
+            >
+              Login now
+            </Link>
+          </div>
         </form>
+        <button
+          type="submit"
+          onClick={togglePassword}
+          className="bg-white h-10 w-10 rounded-md flex items-center"
+        >
+          show
+        </button>
       </div>
-      <footer className="bg-gray-200 p-3">
-        <p className="text-center m-2">
-          This is a WS101 School Project. For Educational Purposes Only
-        </p>
-        <p className="text-center text-sm">
-          Project Created by:
-          <br></br> Jonathan Niez
-          <br></br> Charles Tianchon
-          <br></br>Mar Sarillana{" "}
-        </p>
-      </footer>
     </div>
   );
 }
