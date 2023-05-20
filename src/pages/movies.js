@@ -11,8 +11,6 @@ export default function Movies() {
           "http://localhost/next-movies/php/movies.php"
         );
         setMovies(response.data);
-
-        console.log(response.data);
       } catch (error) {
         console.error(error);
       }
@@ -27,14 +25,17 @@ export default function Movies() {
       movies.map(function (m, index) {
         return (
           <div
-            className="bg-gray-600 w-80 h-96 border-gray-500 border-r-gray-300 border-t-white border-2 p-2 rounded-xl m-2  shadow-md"
+            className="bg-gray-600 w-80 h-full border-gray-500 border-r-gray-300 border-t-white border-2 p-2 rounded-xl m-2  shadow-md"
             key={index}
           >
             <h1 className="text-white text-center text-2xl font-bold">
               {m.movieTitle}
             </h1>
-            <div className="text-white text-center">
-              <img src={m.movieImage}></img>
+            <div className="text-white flex items-center justify-center">
+              <img
+                className="flex rounded-md border-md border-white border-2"
+                src={m.movieImage}
+              ></img>
             </div>
             <h1 className="text-white text-center">Genre: {m.movieGenre}</h1>
           </div>

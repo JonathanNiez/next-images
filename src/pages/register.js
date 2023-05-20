@@ -1,11 +1,21 @@
 import { useState } from "react";
 import Link from "next/link";
-import { register} from "./api/api";
+import { register } from "./api/api";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 export default function Register() {
+  const router = useRouter();
+
   const [showPassword, setShowPassword] = useState(false);
 
   const [isPassMatch, setIsPassMatch] = useState(false);
+
+  useEffect(() => {});
+
+  function checkPassword() {
+    setIsPassMatch(!isPassMatch);
+  }
 
   const [inputs, setInputs] = useState({
     email: "",
@@ -20,13 +30,27 @@ export default function Register() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    const formData = new FormData(e.target);
 
-    try {
-      const response = await register(formData);
-      console.log(response); // Handle success, e.g., show a success message or redirect the user
-    } catch (error) {
-      console.error(error); // Handle error, e.g., show an error message
+    if (
+      inputs.email == "" ||
+      inputs.username == "" ||
+      inputs.password == "" ||
+      inputs.confirmPassword == ""
+    ) {
+      console.log("Please input the fields");
+    } else {
+      const formData = new FormData(e.target);
+      const value = [{ ...formData.entries() }];
+
+      console.log(value);
+
+      try {
+        const response = await register(formData);
+        console.log(response);
+        router.push("/login");
+      } catch (error) {
+        console.error(error); // Handle error, e.g., show an error message
+      }
     }
   }
 
@@ -70,7 +94,7 @@ export default function Register() {
             onChange={(e) => setInputs({ ...inputs, password: e.target.value })}
           />
           {isPassMatch ? (
-            <p>Match</p>
+            true
           ) : (
             <p className="text-red-400">Confirm Password not Match</p>
           )}

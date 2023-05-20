@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { useState } from "react";
 import { login } from "./api/api";
+import { useRouter } from "next/router";
 
 export default function Login() {
-  // let navigate = useNavigate();
+  const router = useRouter();
+
   const [showPassword, setShowPassword] = useState(false);
   const [inputs, setInputs] = useState({
     email: "",
@@ -17,10 +19,13 @@ export default function Login() {
   async function handleSubmit(e) {
     e.preventDefault();
     const formData = new FormData(e.target);
+    const value = [{ ...formData.entries() }];
 
+    console.log(value);
     try {
       const response = await login(formData);
-      console.log(response); // Handle success, e.g., show a success message or redirect the user
+      console.log(response);
+      router.push("/");
     } catch (error) {
       console.error(error); // Handle error, e.g., show an error message
     }

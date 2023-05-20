@@ -5,24 +5,38 @@ header('Content-type: application/json');
 header('Access-Control-Allow-Methods:POST');
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-$Email = $_POST['email'];
-$Password = $_POST['password'];
-$loginSQL = "SELECT * FROM users WHERE email = '$Email' AND password = '$Password'";
-$result = mysqli_query($conn, $loginSQL);
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+  $error = mysqli_error($conn);
+  $Email = $_POST['email'];
+  $Password = $_POST['password'];
+  $checkEmailQuery = "SELECT * FROM users WHERE email = '$Email'";
+  $result = mysqli_query($conn, $checkEmailQuery);
 
-if (mysqli_num_rows($result) > 0) {
-  $fetch = mysqli_fetch_assoc($result);
-  $fetch_pass = $fetch['password'];
-  if (password_verify($Password, $fetch_pass)) {
-    $rows = mysqli_fetch_array($result);
+  if ($result) {
 
-    http_response_code(200);
+    $emailCheck = mysqli_num_rows($result);
+    $fetch = mysqli_fetch_assoc($result);
+    $fetchPassword = $fetch['password'];
 
-    $data = "";
+    if ($emailCheck >= 1 && password_verify($Password, $fetchPassword)) {
+      http_response_code(200);
 
-    echo $data .= '{"Email":"' . $rows["Email"] . '",';
-    echo  $data .= '"Status":"200"}';
+      $rows = mysqli_fetch_array($result);
+
+      echo "Login Successful";
+
+      $data = "";
+      $data .= '{"Email":"' . $rows['email'] . '",';
+      echo $data .= '"Status":"200"}';
+    } else {
+      echo "Invalid User \n";
+      http_response_code(422);
+
+      echo ("Error description: " . $error);
+    }
+  } else {
+    http_response_code(422);
+
+    echo $error;
   }
-} else {
-  echo "Invalid User";
 }

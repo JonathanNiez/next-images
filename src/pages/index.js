@@ -2,21 +2,13 @@ import Link from "next/link";
 import { useState } from "react";
 import Login from "./login";
 import Register from "./register";
-import Navbar from "@/components/NavBar";
 import Movies from "./movies";
-import ViewLayout from "@/components/ViewLayout";
+import { useRouter } from "next/router";
 
 export default function Home() {
-  const [token, setToken] = useState("");
-  const [page, setPage] = useState("movies");
+  const router = useRouter();
 
-  function isUserLoggedIn() {
-    if (token === "") {
-      return <Login />;
-    } else {
-      return <Register />;
-    }
-  }
+  const [page, setPage] = useState("movies");
 
   function changePage(data) {
     setPage(data);
@@ -28,13 +20,13 @@ export default function Home() {
         <div className="items-right flex">
           <button
             className="bg-gray-500 m-2 p-2 rounded-md text-white"
-            onClick={() => changePage("login")}
+            onClick={() => router.push("/login")}
           >
             Login
           </button>
           <button
             className="bg-gray-500 m-2 p-2 rounded-md text-white"
-            onClick={() => changePage("register")}
+            onClick={() => router.push("/register")}
           >
             Register
           </button>
@@ -50,11 +42,7 @@ export default function Home() {
           NextMovies
         </h1>
       </header>
-      <div className="h-auto">
-        {page === "login" && <Login />}
-        {page === "register" && <Register />}
-        {page === "movies" && <Movies />}
-      </div>
+      <div className="h-auto">{page === "movies" && <Movies />}</div>
       <footer className="bg-gray-800 p-3 fixed bottom-0 w-screen rounded-t-lg">
         <p className="text-center text-white m-2">
           This is a WS101 School Project. For Educational Purposes Only
