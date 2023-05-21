@@ -94,7 +94,7 @@ export default function Register() {
             onChange={(e) => setInputs({ ...inputs, password: e.target.value })}
           />
           {isPassMatch ? (
-            true
+            <div></div>
           ) : (
             <p className="text-red-400">Confirm Password not Match</p>
           )}

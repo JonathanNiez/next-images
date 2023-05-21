@@ -18,16 +18,21 @@ export default function Login() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    const formData = new FormData(e.target);
-    const value = [{ ...formData.entries() }];
 
-    console.log(value);
-    try {
-      const response = await login(formData);
-      console.log(response);
-      router.push("/");
-    } catch (error) {
-      console.error(error); // Handle error, e.g., show an error message
+    if (inputs.email == "" || inputs.password == "") {
+      console.log("Please input the fields");
+    } else {
+      const formData = new FormData(e.target);
+      const value = [{ ...formData.entries() }];
+
+      console.log(value);
+      try {
+        const response = await login(formData);
+        console.log(response);
+        router.push("/");
+      } catch (error) {
+        console.error(error); // Handle error, e.g., show an error message
+      }
     }
   }
 

@@ -1,59 +1,68 @@
+import Navbar from "@/components/NavBar";
+import Footer from "@/components/Footer";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import Link from "next/link";
-import { useState } from "react";
-import Login from "./login";
-import Register from "./register";
-import Movies from "./movies";
-import { useRouter } from "next/router";
 
 export default function Home() {
-  const router = useRouter();
+  const [image, setImage] = useState([]);
 
-  const [page, setPage] = useState("movies");
+  useEffect(() => {
+    async function fetchImages() {
+      try {
+        const response = await axios.get(
+          "http://localhost/next-movies-admin/php/images.php"
+        );
+        setImage(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
 
-  function changePage(data) {
-    setPage(data);
+    fetchImages();
+  }, []);
+
+  function loadImages() {
+    return (
+      Array.isArray(image) &&
+      image.map(function (i, index) {
+        return (
+          <div
+            className="bg-gray-600 hover:bg-gray-500 w-80 h-fit border-gray-500 border-r-gray-300 border-t-black border-2 p-2 rounded-xl m-2 grid place-items-center shadow-md"
+            key={index}
+          >
+            <img
+              className="flex rounded-md border-md h-64 w-64"
+              src={`/uploadedImages/${i.imageData}`}
+            />
+            <h1 className="text-white text-center m-2 text-2xl">
+              {i.imageName}
+            </h1>
+          </div>
+        );
+      })
+    );
   }
 
   return (
-    <div className="h-auto">
-      <header className="items-center bg-gray-700 justify-center left-0">
-        <div className="items-right flex">
-          <button
-            className="bg-gray-500 m-2 p-2 rounded-md text-white"
-            onClick={() => router.push("/login")}
-          >
-            Login
-          </button>
-          <button
-            className="bg-gray-500 m-2 p-2 rounded-md text-white"
-            onClick={() => router.push("/register")}
-          >
-            Register
-          </button>
-          <button
-            className="bg-gray-500 m-2 p-2 rounded-md text-white"
-            onClick={() => changePage("movies")}
-          >
-            Movies
-          </button>{" "}
-        </div>
-
-        <h1 className="text-white p-5 text-5xl text-center shadow-md">
-          NextMovies
-        </h1>
-      </header>
-      <div className="h-auto">{page === "movies" && <Movies />}</div>
-      <footer className="bg-gray-800 p-3 fixed bottom-0 w-screen rounded-t-lg">
-        <p className="text-center text-white m-2">
-          This is a WS101 School Project. For Educational Purposes Only
-        </p>
-        <p className="text-center text-white text-sm">
-          Project Created by:
-          <br></br> Jonathan Niez
-          <br></br> Charles Tianchon
-          <br></br>Mar Sarillana{" "}
-        </p>
-      </footer>
+    <div className="h-fit bg-gray-700 mb-24 pb-10">
+      <Navbar />
+      <div className="grid place-items-center">
+        <h1 className="text-4xl text-white text-center">
+          Localhost Image Hosting
+        </h1>{" "}
+        <Link
+          href="/uploadImage"
+          className="bg-gray-500 m-2 mt-5 p-2 rounded-md text-white"
+        >
+          Upload
+        </Link>
+      </div>
+      <div className="p-2 grid gap-3 grid-cols-4 h-auto place-items-center justify-center">
+        {" "}
+        {loadImages()}
+      </div>{" "}
+      <Footer />
     </div>
   );
 }

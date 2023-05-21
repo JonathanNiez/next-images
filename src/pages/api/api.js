@@ -1,8 +1,19 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost/next-movies/php"; // Replace with your API base URL
+const API_BASE_URL = "http://localhost/next-movies/php";
 
-// Register a new user
+export async function uploadImageToDB(imageData) {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/uploadImage.php`,
+      imageData
+    );
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+}
+
 export async function register(userData) {
   try {
     const response = await axios.post(`${API_BASE_URL}/register.php`, userData);
@@ -12,7 +23,6 @@ export async function register(userData) {
   }
 }
 
-// Log in an existing user
 export async function login(userData) {
   try {
     const response = await axios.post(`${API_BASE_URL}/login.php`, userData);
