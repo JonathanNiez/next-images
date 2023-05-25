@@ -1,7 +1,6 @@
 import { useState } from "react";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
-import axios from "axios";
 import { useRouter } from "next/router";
 import { uploadImageToDB } from "./api/api";
 
@@ -35,16 +34,16 @@ export default function UploadImage() {
   }
 
   return (
-    <div className=" bg-gray-700 h-full">
+    <div className=" bg-gray-700 h-screen">
       <NavBar />
-      <div className="grid place-items-center">
+      <div className="grid grid-rows-1 place-items-center justify-center">
         <h1 className="text-red-500 font-bold text-4xl">
           NO ADULT IMAGE ALLOWED
         </h1>
         <form
           method="post"
           encType="multipart/form-data"
-          className="p-3 w-96 border-lg grid m-5 justify-center place-items-center bg-gray-200 rounded-md shadow-md"
+          className="p-3 w-96 border-lg m-5 bg-gray-500 grid place-items-center justify-center rounded-md shadow-md"
           onSubmit={handleSubmit}
         >
           <input
@@ -69,10 +68,7 @@ export default function UploadImage() {
               setInputs({ ...inputs, imageName: e.target.value })
             }
           />
-          <button
-            type="submit"
-            className=" bg-gray-300 w-40 shadow-md m-2 hover:shadow-lg hover:bg-gray-500 hover:text-white p-2 rounded-lg"
-          >
+          <button type="submit" className="text-black font-bold text-center ">
             Upload
           </button>
         </form>

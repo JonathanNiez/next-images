@@ -2,20 +2,12 @@ import { useState } from "react";
 import Link from "next/link";
 import { register } from "./api/api";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import Footer from "@/components/Footer";
 
 export default function Register() {
   const router = useRouter();
 
   const [showPassword, setShowPassword] = useState(false);
-
-  const [isPassMatch, setIsPassMatch] = useState(false);
-
-  useEffect(() => {});
-
-  function checkPassword() {
-    setIsPassMatch(!isPassMatch);
-  }
 
   const [inputs, setInputs] = useState({
     email: "",
@@ -44,98 +36,116 @@ export default function Register() {
 
       console.log(value);
 
-      try {
-        const response = await register(formData);
-        console.log(response);
-        router.push("/login");
-      } catch (error) {
-        console.error(error); // Handle error, e.g., show an error message
+      if (inputs.password == inputs.confirmPassword) {
+        try {
+          const response = await register(formData);
+          console.log(response);
+          router.push("/login");
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        alert("Password Not Matched");
       }
     }
   }
 
   return (
     <div className="h-screen bg-gray-700">
-      <header className="bg-gray-600 rounded-md  shadow-md p-3">
-        <h1 className="text-3xl text-white  text-center">Register</h1>
+      <header className="bg-gray-800 mb-5">
+        <div className="grid grid-cols-2 gap-3">
+          <Link
+            className="text-white p-5 text-5xl col-start-1 col-end-2"
+            href="/"
+          >
+            NextImages
+          </Link>
+        </div>
       </header>
-      <div className="h-auto flex items-center justify-center">
+      <div className="grid place-items-center justify-center">
         <form
           method="post"
-          className="p-3 w-96 border-lg grid m-5 justify-center place-items-center bg-gray-500 rounded-md shadow-md"
           onSubmit={handleSubmit}
+          className="container h-96 flex items-center justify-center"
         >
-          <input
-            value={inputs.username}
-            type="text"
-            id="username"
-            name="username"
-            placeholder="Username"
-            className="rounded-md shadow-md m-1 p-2 w-64"
-            onChange={(e) => setInputs({ ...inputs, username: e.target.value })}
-          />
-
-          <input
-            value={inputs.email}
-            type="email"
-            id="email"
-            name="email"
-            placeholder="Email"
-            className="rounded-md shadow-md m-1 p-2 w-64"
-            onChange={(e) => setInputs({ ...inputs, email: e.target.value })}
-          />
-          <input
-            value={inputs.password}
-            type={showPassword ? "text" : "password"}
-            placeholder="Password"
-            id="password"
-            name="password"
-            className="rounded-md shadow-md m-1 p-2 w-64 flex"
-            onChange={(e) => setInputs({ ...inputs, password: e.target.value })}
-          />
-          {isPassMatch ? (
-            <div></div>
-          ) : (
-            <p className="text-red-400">Confirm Password not Match</p>
-          )}
-          <div className="flex">
-            <input
-              value={inputs.confirmPassword}
-              type={showPassword ? "text" : "password"}
-              placeholder="Confirm Password"
-              id="confirmPassword"
-              className="rounded-md shadow-md flex m-1 p-2 w-64 align-items-center"
-              onChange={(e) =>
-                setInputs({ ...inputs, confirmPassword: e.target.value })
-              }
-            />
+          <h1 className="text-3xl text-white mb-5">REGISTER</h1>
+          <div className="input-container">
+            <div className="input-content">
+              <div className="input-dist">
+                <div className="input-type">
+                  <input
+                    value={inputs.username}
+                    placeholder="Username"
+                    required
+                    type="text"
+                    name="username"
+                    id="username"
+                    className="input-is"
+                    onChange={(e) =>
+                      setInputs({ ...inputs, username: e.target.value })
+                    }
+                  />
+                  <input
+                    value={inputs.email}
+                    placeholder="Email"
+                    required
+                    type="email"
+                    name="email"
+                    id="email"
+                    className="input-is"
+                    onChange={(e) =>
+                      setInputs({ ...inputs, email: e.target.value })
+                    }
+                  />
+                  <input
+                    value={inputs.confirmPassword}
+                    placeholder="Confirm Password"
+                    required
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    type={showPassword ? "text" : "password"}
+                    className="input-is"
+                    onChange={(e) =>
+                      setInputs({ ...inputs, confirmPassword: e.target.value })
+                    }
+                  />
+                  <input
+                    value={inputs.password}
+                    placeholder="Password"
+                    required
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    className="input-is"
+                    onChange={(e) =>
+                      setInputs({ ...inputs, password: e.target.value })
+                    }
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-
-          <button
-            type="submit"
-            className=" bg-gray-300 w-40 shadow-md m-2 hover:shadow-lg hover:bg-gray-500 hover:text-white p-2 rounded-lg"
-          >
+          <button type="submit" className="bg-gray-500">
             Register
           </button>
-
-          <div className="flex">
-            <p className="text-white mr-2">Already have an Account? </p>
-            <Link
-              href="/login"
-              className="text-white hover:shadow-gray-400 hover:text-gray-400"
-            >
-              Login now
-            </Link>
-          </div>
         </form>
-        <button
-          type="submit"
-          onClick={togglePassword}
-          className="bg-white h-10 w-10 rounded-md flex items-center"
-        >
-          show
-        </button>
+        <div>
+          <button
+            onClick={togglePassword}
+            className="toggle-button bg-white h-fit w-fit p-5 text-center"
+          >
+            👁
+          </button>
+        </div>
+
+        <div className="flex mt-5">
+          <p className="text-white mr-2">Already have an Account?</p>
+          <Link className="text-white font-bold" href="/login">
+            Login
+          </Link>
+        </div>
       </div>
+      <Footer />
     </div>
   );
 }

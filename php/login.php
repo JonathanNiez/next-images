@@ -17,26 +17,30 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $emailCheck = mysqli_num_rows($result);
     $fetch = mysqli_fetch_assoc($result);
     $fetchPassword = $fetch['password'];
+    $data = "";
 
     if ($emailCheck >= 1 && password_verify($Password, $fetchPassword)) {
-      http_response_code(200);
 
+      $result = mysqli_query($conn, $checkEmailQuery);
       $rows = mysqli_fetch_array($result);
 
-      echo "Login Successful";
+      http_response_code(200);
 
-      $data = "";
       $data .= '{"Email":"' . $rows['email'] . '",';
+      $data .= '"Username":"' . $rows["username"] . '",';
+
       echo $data .= '"Status":"200"}';
     } else {
       echo "Invalid User \n";
       http_response_code(422);
 
-      echo ("Error description: " . $error);
+      echo $data = '{"Status":"422"}';
     }
   } else {
     http_response_code(422);
 
-    echo $error;
+    echo $data = '{"Status":"422"}';
+
+    mysqli_close($conn);
   }
 }

@@ -5,8 +5,8 @@ header('Content-type: application/json');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
-$UserDirectory = 'C:/xampp/htdocs/next-movies/public/uploadedImages/';
-$AdminDirectory = 'C:/xampp/htdocs/next-movies-admin/public/uploadedImages/';
+$UserDirectory = 'C:/xampp/htdocs/next-images/public/uploadedImages/';
+$AdminDirectory = 'C:/xampp/htdocs/next-images-admin/public/uploadedImages/';
 
 $ImageData = $_FILES['imageData']['tmp_name'];
 $ImageDataName = $_FILES['imageData']['name'];

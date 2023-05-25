@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost/next-movies/php";
+const API_BASE_URL = "http://localhost/next-images/php";
 
 export async function uploadImageToDB(imageData) {
   try {

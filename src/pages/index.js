@@ -11,7 +11,7 @@ export default function Home() {
     async function fetchImages() {
       try {
         const response = await axios.get(
-          "http://localhost/next-movies-admin/php/images.php"
+          "http://localhost/next-images-admin/php/images.php"
         );
         setImage(response.data);
       } catch (error) {
@@ -27,17 +27,16 @@ export default function Home() {
       Array.isArray(image) &&
       image.map(function (i, index) {
         return (
-          <div
-            className="bg-gray-600 hover:bg-gray-500 w-80 h-fit border-gray-500 border-r-gray-300 border-t-black border-2 p-2 rounded-xl m-2 grid place-items-center shadow-md"
-            key={index}
-          >
-            <img
-              className="flex rounded-md border-md h-64 w-64"
-              src={`/uploadedImages/${i.imageData}`}
-            />
-            <h1 className="text-white text-center m-2 text-2xl">
-              {i.imageName}
-            </h1>
+          <div className="card" key={index}>
+            <div className="card2">
+              <img
+                className="rounded-lg h-64 w-64"
+                src={`/uploadedImages/${i.imageData}`}
+              />
+              <h1 className="text-white text-center p-2 text-1xl">
+                {i.imageName}
+              </h1>
+            </div>
           </div>
         );
       })
@@ -53,15 +52,14 @@ export default function Home() {
         </h1>{" "}
         <Link
           href="/uploadImage"
-          className="bg-gray-500 m-2 mt-5 p-2 rounded-md text-white"
+          className="bg-gray-500 hover:bg-gray-600 m-2 mt-5 p-2 rounded-md text-white"
         >
           Upload
         </Link>
       </div>
-      <div className="p-2 grid gap-3 grid-cols-4 h-auto place-items-center justify-center">
-        {" "}
+      <div className="p-2 grid gap-2 grid-cols-7 h-auto place-items-center justify-center">
         {loadImages()}
-      </div>{" "}
+      </div>
       <Footer />
     </div>
   );

@@ -1,7 +1,9 @@
-import Link from "next/link";
+import axios from "axios";
 import { useState } from "react";
-import { login } from "./api/api";
 import { useRouter } from "next/router";
+import { userIsLoggedIn$, userInfo$ } from "./api/userStore";
+import Footer from "@/components/Footer";
+import Link from "next/link";
 
 export default function Login() {
   const router = useRouter();
@@ -23,76 +25,109 @@ export default function Login() {
       console.log("Please input the fields");
     } else {
       const formData = new FormData(e.target);
-      const value = [{ ...formData.entries() }];
 
-      console.log(value);
-      try {
-        const response = await login(formData);
-        console.log(response);
-        router.push("/");
-      } catch (error) {
-        console.error(error); // Handle error, e.g., show an error message
-      }
+      axios
+        .post("http://localhost/next-images/php/login.php", formData)
+        .then((result) => {
+          if (result.data.Status === "200") {
+            userIsLoggedIn$.set(true);
+
+            window.localStorage.setItem("Email", result.data.Email);
+            window.localStorage.setItem("Username", result.data.Username);
+            userInfo$.set({
+              email: result.data.Email,
+              username: result.data.Username,
+            });
+
+            console.log(result);
+            console.log("Logging In");
+            console.log(userInfo$);
+            console.log(userIsLoggedIn$);
+
+            router.push("/");
+          } else if (result.data.Status === "422") {
+            alert("Invalid User");
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          alert("Invalid User");
+        });
     }
   }
 
   return (
     <div className="h-screen bg-gray-700">
-      <header className="bg-gray-600 rounded-md  shadow-md p-3">
-        <h1 className="text-3xl text-white  text-center">Login</h1>
+      <header className="bg-gray-800 mb-5">
+        <div className="grid grid-cols-2 gap-3">
+          <Link
+            className="text-white p-5 text-5xl col-start-1 col-end-2"
+            href="/"
+          >
+            NextImages
+          </Link>
+        </div>
       </header>
-      <div className="flex items-center justify-center">
-        <form
-          method="post"
-          className="p-3 w-96 border-lg grid m-5 justify-center place-items-center bg-gray-500 rounded-md shadow-md"
-          onSubmit={handleSubmit}
-        >
-          <input
-            value={inputs.email}
-            type="email"
-            id="email"
-            name="email"
-            placeholder="Email"
-            className="rounded-md shadow-md m-1 p-2 w-64"
-            onChange={(e) => setInputs({ ...inputs, email: e.target.value })}
-          />
-          <div className="flex">
-            <input
-              value={inputs.password}
-              type={showPassword ? "text" : "password"}
-              id="password"
-              name="password"
-              placeholder="Password"
-              className="rounded-md shadow-md m-1 p-2 w-64 flex align-items-center"
-              onChange={(e) =>
-                setInputs({ ...inputs, password: e.target.value })
-              }
-            />
+      <div className="grid place-items-center justify-center">
+        <form method="post" onSubmit={handleSubmit} className="container">
+          <h1 className="text-3xl text-white mb-5">LOGIN</h1>
+
+          <div className="input-container">
+            <div className="input-content">
+              <div className="input-dist">
+                <div className="input-type">
+                  <input
+                    value={inputs.email}
+                    placeholder="Email"
+                    required
+                    type="text"
+                    name="email"
+                    id="email"
+                    className="input-is"
+                    onChange={(e) =>
+                      setInputs({ ...inputs, email: e.target.value })
+                    }
+                  />
+                  <input
+                    value={inputs.password}
+                    placeholder="Password"
+                    required
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    className="input-is"
+                    onChange={(e) =>
+                      setInputs({ ...inputs, password: e.target.value })
+                    }
+                  />
+                </div>
+              </div>
+            </div>
           </div>
           <button
             type="submit"
-            className=" bg-gray-300 w-40 shadow-md m-2 hover:shadow-lg hover:bg-gray-500 hover:text-white p-2 rounded-lg"
+            className="bg-gray-500 rounded-md text-center text-white font-bold"
           >
             Login
           </button>
-
-          <div className="flex">
-            <p className="text-white mr-2">Don't have an Account? </p>
-            <Link
-              href="/register"
-              className="text-white hover:shadow-gray-400 hover:text-gray-400"
-            >
-              Register now
-            </Link>
-          </div>
         </form>
-        <button
-          onClick={togglePassword}
-          className="bg-white h-10 w-10 m-1 text-center rounded-md"
-        >
-          show
-        </button>
+        <div>
+          <button
+            onClick={togglePassword}
+            className="toggle-button bg-white h-fit w-fit p-5 text-center"
+          >
+            👁
+          </button>
+        </div>
+
+        <div className="flex mt-5">
+          <p className="text-white mr-2">Don't have an Account?</p>
+          <Link className="text-white font-bold" href="/register">
+            Register
+          </Link>
+        </div>
       </div>
+      <Footer />
     </div>
   );
 }
